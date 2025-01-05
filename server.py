@@ -2,6 +2,20 @@ from datetime import datetime
 import json
 import threading
 import socket
+#Provided hash for passwords
+import bcrypt
+
+#Hash password before saving
+def hash_password(password):
+    #
+    #hashpw - function that makes the password hashed
+    #gensalt -
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+#Verify password against hashed version
+def verify_password(stored_password, provided_password):
+    #checkpw -
+    return bcrypt.checkpw(provided_password.encode(), stored_password.encode())
 
 #If there is an error, the code will jump to the except block
 try:
@@ -13,8 +27,7 @@ try:
 #Runs this block if the file doesn’t exist
 except FileNotFoundError:
     users_list = {}
-
-#Function handles communication.
+ #Function handles communication.
 def client_connection(client_socket):
     #Declares users_list as a global so changes to it will affect the entire program.
     global users_list
@@ -52,7 +65,7 @@ def client_connection(client_socket):
                         client_socket.send("Username already taken!".encode())
                     else:
                     #If it doesn’t, adds the user to users_list
-                        users_list[username] = {"password": password, "messages": []}
+                        users_list[username] = {"password": hash_password(password), "messages": []}
                         #and saves the updated list to users.json
                         with open("users.json", "w") as users_file:
                             json.dump(users_list, users_file, indent=4)
@@ -67,7 +80,7 @@ def client_connection(client_socket):
                     username, password = args
                     #Verifies the username and password.
                     if username in users_list:
-                        if users_list[username]["password"] == password:
+                        if verify_password(users_list[username]["password"], password):
                             client_socket.send(f"Welcome back, {username}!".encode())
                         else:
                             client_socket.send("Incorrect password.".encode())
