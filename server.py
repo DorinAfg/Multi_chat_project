@@ -5,16 +5,15 @@ import socket
 #Provided hash for passwords
 import bcrypt
 
-#Hash password before saving
+#Hash passwords securely
 def hash_password(password):
-    #
-    #hashpw - function that makes the password hashed
-    #gensalt -
+    #hashpw - Hashes the given password.
+    #gensalt - Generates a unique "salt" value to make the hashing process secure and prevent hash collisions.
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 #Verify password against hashed version
 def verify_password(stored_password, provided_password):
-    #checkpw -
+    #checkpw - Generates a unique "salt" value to make the hashing process secure and prevent hash collisions.
     return bcrypt.checkpw(provided_password.encode(), stored_password.encode())
 
 #If there is an error, the code will jump to the except block

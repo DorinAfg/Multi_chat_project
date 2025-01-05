@@ -48,6 +48,7 @@ def multiple_clients():
         #Waits for each thread to finish its task.
         thread.join()
 
+
 #Ensures this code runs only when the file is executed directly.
 if __name__ == "__main__":
     multiple_clients()
