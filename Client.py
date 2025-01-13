@@ -1,14 +1,31 @@
 import socket
+from cryptography.fernet import Fernet
 
+#Load the key from the secret.key file
+def load_key():
+    try:
+        with open("secret.key", "rb") as key_file:
+            return key_file.read()
+    except FileNotFoundError:
+        print("Error: The key file 'secret.key' is missing.")
+        exit()
+
+#Decryption function
+def decrypt_message(encrypted_message):
+    key = load_key()
+    fernet = Fernet(key)
+    try:
+        decrypted_message = fernet.decrypt(encrypted_message).decode()
+        return decrypted_message
+    except Exception:
+        return None  # Return None if decryption fails
 
 #Register new user
 def register_user():
     new_username = input("Choose your username: ").strip()
     new_password = input("Choose your password: ").strip()
-    #A command
     command = f"REGISTER|{new_username}|{new_password}"
     return command
-
 
 #Existing user login
 def login_user():
@@ -17,8 +34,7 @@ def login_user():
     command = f"LOGIN|{username}|{password}"
     return command
 
-
-#Send Message
+#Send message
 def send_message(username):
     while True:
         message = input("Type a message or 'logout' to logout: ").strip()
@@ -31,12 +47,19 @@ def send_message(username):
                 client_socket.connect(('127.0.0.1', 12345))
                 client_socket.send(command.encode())
                 response = client_socket.recv(1024).decode()
-                print(response)
+
+                # Handle encrypted responses
+                decrypted_response = decrypt_message(response.encode())
+                if decrypted_response:
+                    print(f"Decrypted response: {decrypted_response}")
+                else:
+                    print(f" {response}")
             except ConnectionRefusedError:
                 print("Could not connect to the server. Please make sure the server is running.")
             except Exception as e:
                 print(f"Error: {e}")
 
+#Main client function
 def client():
     while True:
         choice = input("Enter R to register, L to login, or Q to quit: ").strip().upper()
@@ -51,34 +74,26 @@ def client():
             print("Invalid input.")
             continue
 
-        # This creates a new socket object using IPv4 (AF_INET) and TCP (SOCK_STREAM) for communication
+        #Create a socket and connect to the server
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
             try:
-                # connects the client socket to the server running on 127.0.0.1 on port 12345.
                 client_socket.connect(('127.0.0.1', 12345))
-                # sends the command to the server.
-                # The command is a string that encoded into bytes before sending over the socket.
                 client_socket.send(command.encode())
-                # receives a response from the server
-                # It reads up to 1024 bytes from the server and decodes it into a string.
                 response = client_socket.recv(1024).decode()
-                # checks if the response contains any whitespace characters
+
+                #Display the server's response
                 if response.strip():
                     print(response)
-                #checks if the response contains the word "successful"
-                if "successful" or "Welcome" in response.lower():
-                    # extracts the username from the command string
-                    # The username is the second item in the command after splitting by |. (that's why [1])
+
+                #Check for successful login
+                if "successful" in response.lower() or "welcome" in response.lower():
                     username = command.split("|")[1]
                     print("You can now type a message or 'logout' to logout.")
                     send_message(username)
-            #If any error occurs, sends a generic error message to the client, and exits the loop.
             except ConnectionRefusedError:
                 print("Could not connect to the server. Please make sure the server is running.")
             except Exception as e:
                 print(f"Error: {e}")
 
-
 if __name__ == "__main__":
-    # Client activation
     client()
