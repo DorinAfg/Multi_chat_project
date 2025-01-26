@@ -28,14 +28,14 @@ def register_user():
     command = f"REGISTER|{new_username}|{new_password}"
     return command
 
-# Existing user login
+#Existing user login
 def login_user():
     username = input("Enter your username: ").strip()
     password = input("Enter your password: ").strip()
     command = f"LOGIN|{username}|{password}"
     return command
 
-# Function to listen for messages from the server in real-time
+#Function to listen for messages from the server in real-time
 def listen_to_server(client_socket, stop_event):
     while not stop_event.is_set():
         try:
