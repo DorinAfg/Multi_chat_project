@@ -5,7 +5,7 @@ import socket
 from cryptography.fernet import Fernet
 import bcrypt
 
-#Hash passwords securely
+# Hash passwords securely
 def hash_password(password):
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
@@ -13,13 +13,13 @@ def hash_password(password):
 def verify_password(stored_password, provided_password):
     return bcrypt.checkpw(provided_password.encode(), stored_password.encode())
 
-#Generate a key for encryption
+# Generate a key for encryption
 def generate_key():
     key = Fernet.generate_key()
     with open("secret.key", "wb") as key_file:
         key_file.write(key)
 
-#Load the key from the secret.key file
+# Load the key from the secret.key file
 def load_key():
     try:
         with open("secret.key", "rb") as key_file:
@@ -29,23 +29,22 @@ def load_key():
         print("The key file 'secret.key' has been generated.")
         return load_key()
 
-#Encryption function
+# Encryption function
 def encrypt_message(message):
     key = load_key()
     fernet = Fernet(key)
     encrypted_message = fernet.encrypt(message.encode())
     return encrypted_message
 
-#Decryption function
+# Decryption function
 def decrypt_message(encrypted_message):
     key = load_key()
     fernet = Fernet(key)
     return fernet.decrypt(encrypted_message).decode()
 
-#If there is an error, the code will jump to the except block
+# If there is an error, the code will jump to the except block
 try:
-    #opens the file users.json in read mode ("r")
-    #with make sure the file is automatically closed after it’s read, even if something goes wrong
+    # Opens the file users.json in read mode ("r")
     with open("users.json", "r") as file:
         users_list = json.load(file)
 except FileNotFoundError:
@@ -53,26 +52,34 @@ except FileNotFoundError:
 
 active_clients = []
 
-#Broadcast message function
+# Broadcast message function
 def broadcast_message(message, sender_socket):
     for client in active_clients:
         if client != sender_socket:
             try:
                 client.send(message.encode())
-            except Exception as e:
+            except (socket.error, OSError) as e:
                 print(f"Failed to send message to a client: {e}")
+                try:
+                    active_clients.remove(client)
+                    client.close()
+                except ValueError:
+                    pass
 
-
+# Handle client connection
 def client_connection(client_socket):
     global users_list, active_clients
     active_clients.append(client_socket)
 
     try:
-
         while True:
-            data = client_socket.recv(1024).decode()
-            if not data:
-                print("The client disconnected")
+            try:
+                data = client_socket.recv(1024).decode()
+                if not data:  # If no data, client disconnected
+                    print("The client disconnected")
+                    break
+            except socket.error as e:
+                print(f"Error receiving message: {e}")
                 break
 
             command, *args = data.split("|")
@@ -90,6 +97,8 @@ def client_connection(client_socket):
                         json.dump(users_list, users_file, indent=4)
                     client_socket.send("Registration successful!".encode())
 
+
+
             elif command == "LOGIN":
                 if len(args) != 2 or not args[0] or not args[1]:
                     client_socket.send("Invalid command format or empty username/password.".encode())
@@ -98,7 +107,9 @@ def client_connection(client_socket):
                 username, password = args
                 if username in users_list:
                     if verify_password(users_list[username]["password"], password):
-                        client_socket.send(f"Welcome back, {username}!".encode())
+                        history = users_list[username]["messages"]
+                        history_messages = "\n".join([f"{msg['time']} - {username}: {decrypt_message(msg['message'])}" for msg in history])
+                        client_socket.send(f"Welcome back, {username}!\nYour message history:\n{history_messages}".encode())
                     else:
                         client_socket.send("Incorrect password.".encode())
                 else:
@@ -129,21 +140,30 @@ def client_connection(client_socket):
         print(f"Error in client connection: {e}")
 
     finally:
-        active_clients.remove(client_socket)
-        client_socket.close()
+        try:
+            active_clients.remove(client_socket)
+        except ValueError:
+            pass
+        try:
+            client_socket.close()
+        except Exception as e:
+            print(f"Error during socket cleanup: {e}")
 
-
+# Start the server
 def start_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.settimeout(60)  # Set timeout of 60 seconds for each connection
     server.bind(("0.0.0.0", 12345))
     server.listen(10)
     print("The server is ready and waiting for connections.")
     while True:
-        client_socket, addr = server.accept()
-        print("The connection was established with", addr)
-        client_handler = threading.Thread(target=client_connection, args=(client_socket,))
-        client_handler.start()
-
+        try:
+            client_socket, addr = server.accept()
+            print("The connection was established with", addr)
+            client_handler = threading.Thread(target=client_connection, args=(client_socket,))
+            client_handler.start()
+        except socket.timeout:
+            print("Server timed out while waiting for a new connection.")
 
 if __name__ == "__main__":
     start_server()

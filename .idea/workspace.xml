@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05857f0-c828-4895-ae4b-39b1e4a4cdd1" name="Changes" comment="add requirements.txt">
-      <change afterPath="$PROJECT_DIR$/Client2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Multi_chat_project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Multi_chat_project.iml" afterDir="false" />
+    <list default="true" id="d05857f0-c828-4895-ae4b-39b1e4a4cdd1" name="Changes" comment="FIX BUG">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
@@ -43,19 +41,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.Client.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Client2.executor&quot;: &quot;Run&quot;,
-    &quot;Python.client_simulation.executor&quot;: &quot;Run&quot;,
-    &quot;Python.server.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/chelsea/Intergration python/Multi_chat_project&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.Client.executor": "Run",
+    "Python.Client2.executor": "Run",
+    "Python.client_simulation.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.server.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/chelsea/Intergration python/Multi_chat_project"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\chelsea\Intergration python\Multi_chat_project" />
@@ -207,7 +206,39 @@
       <option name="project" value="LOCAL‎" />
       <updated>1737277570677</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL‎-00005" summary="add requirements.txt">
+      <option name="closed" value="true" />
+      <created>1737899882928</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL‎-00005" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1737899882928</updated>
+    </task>
+    <task id="LOCAL‎-00006" summary="FIX BUG">
+      <option name="closed" value="true" />
+      <created>1737901081714</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL‎-00006" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1737901081714</updated>
+    </task>
+    <task id="LOCAL‎-00007" summary="FIX BUG">
+      <option name="closed" value="true" />
+      <created>1737901140402</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL‎-00007" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1737901140402</updated>
+    </task>
+    <task id="LOCAL‎-00008" summary="FIX BUG">
+      <option name="closed" value="true" />
+      <created>1737901229520</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL‎-00008" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1737901229520</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -225,6 +256,7 @@
     <MESSAGE value="fix login" />
     <MESSAGE value="Cryptography add" />
     <MESSAGE value="add requirements.txt" />
-    <option name="LAST_COMMIT_MESSAGE" value="add requirements.txt" />
+    <MESSAGE value="FIX BUG" />
+    <option name="LAST_COMMIT_MESSAGE" value="FIX BUG" />
   </component>
 </project>
